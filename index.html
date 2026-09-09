@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Port Pilot — Your local services, under control</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #18181b;
+        --surface: #1e1e22;
+        --border: #2e2e33;
+        --text: #e5e5e5;
+        --text-dim: #737373;
+        --cyan: #22d3ee;
+        --green: #4ade80;
+        --yellow: #facc15;
+        --red: #f87171;
+        --blue: #60a5fa;
+        --mono: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .hero {
+        padding: 80px 0 60px;
+        text-align: center;
+      }
+      .hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 16px;
+      }
+      .hero h1 span {
+        color: var(--cyan);
+      }
+      .hero p {
+        font-size: 1.2rem;
+        color: var(--text-dim);
+        max-width: 540px;
+        margin: 0 auto 32px;
+      }
+      .hero-install {
+        display: inline-block;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        color: var(--green);
+      }
+
+      .terminal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 48px 0;
+      }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: #1a1a1a;
+        border-bottom: 1px solid var(--border);
+      }
+      .terminal-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--border);
+      }
+      .terminal-title {
+        font-size: 0.8rem;
+        color: var(--text-dim);
+        margin-left: 8px;
+      }
+      .terminal pre {
+        padding: 20px 24px;
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        overflow-x: auto;
+        margin: 0;
+        color: var(--text);
+      }
+      .t-c {
+        color: var(--cyan);
+      }
+      .t-d {
+        color: var(--text-dim);
+      }
+      .t-g {
+        color: var(--green);
+      }
+      .t-y {
+        color: var(--yellow);
+      }
+      .t-b {
+        font-weight: 700;
+      }
+
+      section {
+        padding: 48px 0;
+      }
+      section h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .feature {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .feature-icon {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+      }
+      .feature h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+      .feature p {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        line-height: 1.5;
+      }
+
+      .shortcuts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .shortcut {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .shortcut kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        height: 28px;
+        padding: 0 8px;
+        background: #1a1a1a;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--cyan);
+        font-weight: 600;
+      }
+      .shortcut span {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+      }
+
+      .cli-examples {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .cli-example {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .cli-example-header {
+        padding: 10px 16px;
+        background: #1a1a1a;
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        color: var(--cyan);
+      }
+      .cli-example pre {
+        padding: 14px 16px;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        line-height: 1.6;
+        color: var(--text-dim);
+        margin: 0;
+        overflow-x: auto;
+      }
+
+      .steps {
+        counter-reset: step;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .step {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .step-number {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--cyan);
+      }
+      .step p {
+        font-size: 0.9rem;
+        color: var(--text-dim);
+        padding-top: 4px;
+      }
+      .step code {
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        background: var(--surface);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: var(--text);
+      }
+
+      .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .tech-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 14px;
+        text-align: center;
+      }
+      .tech-item strong {
+        display: block;
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+      }
+      .tech-item span {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+      }
+
+      footer {
+        padding: 48px 0;
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+        margin-top: 24px;
+      }
+
+      @media (max-width: 640px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+        .hero p {
+          font-size: 1rem;
+        }
+        .features {
+          grid-template-columns: 1fr;
+        }
+        .shortcuts {
+          grid-template-columns: 1fr;
+        }
+        .tech-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Hero -->
+      <section class="hero">
+        <h1><span>Port</span> Pilot</h1>
+        <p>
+          See every local service, understand what launched it, check whether
+          it is healthy, and stop it safely &mdash; from a native macOS menu
+          bar companion or an agent-ready terminal toolkit.
+        </p>
+        <div class="hero-install">
+          npm install &amp;&amp; npm run build &amp;&amp; npm link
+        </div>
+      </section>
+
+      <!-- Terminal mockup -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <div class="terminal-dot"></div>
+          <span class="terminal-title">ports</span>
+        </div>
+        <!-- prettier-ignore -->
+        <pre>
+ <span class="t-c t-b">Port Pilot</span>                 <span class="t-d">development services   sort: port   4 processes</span>
+
+   <span class="t-d">Port   Project              Framework   PID     Memory    HTTP       Cmd</span>
+ <span class="t-c">▸</span> <span class="t-b">3000</span>   my-blog              <span class="t-c">Astro</span>       8595    60 MB     <span class="t-g">200 18ms</span>   node
+   4321   site-inspector       <span class="t-c">Astro</span>       10772   64 MB     <span class="t-g">200 12ms</span>   node
+   5173   client-app           <span class="t-c">Vite</span>        9201    85 MB     <span class="t-g">200 9ms</span>    node
+   <span class="t-d">5432   —                    —           1234    50 MB     —          postgres</span>
+   8080   api-server           <span class="t-c">Node.js</span>     4500    200 MB    <span class="t-g">204 7ms</span>    node
+   <span class="t-d">  80   —                    —           1214    26 MB     <span class="t-g">200 5ms</span>    caddy</span>
+
+ <span class="t-c t-b">[K]</span><span class="t-d"> Stop safely</span>  <span class="t-c t-b">[o]</span><span class="t-d"> Open</span>  <span class="t-c t-b">[u/p/c/d]</span><span class="t-d"> Copy</span>  <span class="t-c t-b">[f]</span><span class="t-d"> Filter</span>  <span class="t-c t-b">[/]</span><span class="t-d"> Search</span>  <span class="t-c t-b">[q]</span><span class="t-d"> Quit</span>
+</pre>
+      </div>
+
+      <!-- Features -->
+      <section>
+        <h2>Features</h2>
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">&#x1f50d;</div>
+            <h4>Native Menu Companion</h4>
+            <p>
+              Browse, search, inspect, open, copy, monitor, and safely stop local
+              services without leaving the macOS menu bar.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#x26a1;</div>
+            <h4>Safe Process Trees</h4>
+            <p>
+              Preview the target and confirm before Port Pilot stops descendants
+              and the owning listener gracefully.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#x1f310;</div>
+            <h4>Open in Browser</h4>
+            <p>
+              Press O to open localhost:PORT in your default browser. No
+              copy-pasting URLs.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#x1f4dd;</div>
+            <h4>Open in Editor</h4>
+            <p>
+              Press E to open the project folder in Cursor or VS Code. Jump
+              straight into the code.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#x1f3af;</div>
+            <h4>Filter &amp; Search</h4>
+            <p>
+              Start with likely development services, switch to every listener
+              explicitly, or search by project, port, and command.
+            </p>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">&#x1f4ca;</div>
+            <h4>Health &amp; Context</h4>
+            <p>
+              See HTTP status, page title, Docker mapping, owner, ancestry,
+              CPU, memory, and uptime at a glance.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard shortcuts -->
+      <section>
+        <h2>Keyboard Shortcuts</h2>
+        <p style="color: var(--text-dim); margin-bottom: 16px">
+          The TUI dashboard is fully keyboard-driven.
+        </p>
+        <div class="shortcuts">
+          <div class="shortcut">
+            <kbd>&#x2191; &#x2193;</kbd> <span>Navigate up / down</span>
+          </div>
+          <div class="shortcut">
+            <kbd>K</kbd> <span>Preview and confirm safe stop</span>
+          </div>
+          <div class="shortcut"><kbd>o</kbd> <span>Open in browser</span></div>
+          <div class="shortcut"><kbd>e</kbd> <span>Open in editor</span></div>
+          <div class="shortcut">
+            <kbd>f</kbd> <span>Cycle filter mode</span>
+          </div>
+          <div class="shortcut"><kbd>s</kbd> <span>Cycle sort field</span></div>
+          <div class="shortcut"><kbd>/</kbd> <span>Search</span></div>
+          <div class="shortcut"><kbd>r</kbd> <span>Refresh</span></div>
+        </div>
+      </section>
+
+      <!-- CLI Commands -->
+      <section>
+        <h2>CLI Commands</h2>
+        <p style="color: var(--text-dim); margin-bottom: 8px">
+          For quick, non-interactive use.
+        </p>
+
+        <div class="cli-examples">
+          <div class="cli-example">
+            <div class="cli-example-header">$ ports check 3000</div>
+            <!-- prettier-ignore -->
+            <pre>
+<span class="t-y">● Port 3000 is in use</span>
+
+  PID:       <span class="t-b">8595</span>
+  Command:   node
+  Project:   <span class="t-c">my-blog</span>
+  Framework: <span class="t-c">Astro</span>
+  Directory: <span class="t-d">/Users/you/dev/my-blog</span>
+  Memory:    60 MB
+  Uptime:    3d 0h
+
+  <span class="t-d">Kill it with: ports kill 3000</span>
+</pre>
+          </div>
+
+          <div class="cli-example">
+            <div class="cli-example-header">$ ports kill 3000</div>
+            <!-- prettier-ignore -->
+            <pre>
+Stop this process tree with SIGTERM? [y/N] y
+<span class="t-g">✓ Freed port 3000; signaled 2 processes</span>
+</pre>
+          </div>
+
+          <div class="cli-example">
+            <div class="cli-example-header">$ ports check 9999</div>
+            <!-- prettier-ignore -->
+            <pre>
+<span class="t-g">✓ Port 9999 is free</span>
+</pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section>
+        <h2>How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <p>
+              Uses <code>lsof</code> on macOS or <code>ss</code> on Linux to find
+              every listening TCP port on your machine.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <p>
+              Parses PIDs and port numbers, deduplicates IPv4/IPv6 entries for
+              the same process.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <p>
+              Adds process owner, ancestry, working directory, CPU, memory, and
+              uptime, then detects projects and frameworks.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <p>
+              Probes likely HTTP services with short timeouts and maps published
+              ports to Docker containers when available.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">5</div>
+            <p>
+              Serves the same typed records to the live TUI, JSON commands,
+              availability checks, waits, aliases, and lifecycle events.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tech stack -->
+      <section>
+        <h2>Tech Stack</h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <strong>TypeScript</strong><span>Language</span>
+          </div>
+          <div class="tech-item">
+            <strong>Ink + React</strong><span>Terminal UI</span>
+          </div>
+          <div class="tech-item">
+            <strong>Commander.js</strong><span>CLI commands</span>
+          </div>
+          <div class="tech-item"><strong>SwiftUI</strong><span>macOS companion</span></div>
+          <div class="tech-item">
+            <strong>execa</strong><span>System commands</span>
+          </div>
+          <div class="tech-item"><strong>tsup</strong><span>Bundler</span></div>
+        </div>
+      </section>
+
+      <!-- Install -->
+      <section>
+        <h2>Get Started</h2>
+        <div class="cli-examples">
+          <div class="cli-example">
+            <div class="cli-example-header">Install</div>
+            <!-- prettier-ignore -->
+            <pre>
+<span class="t-d"># Clone the repo, then:</span>
+<span class="t-g">npm install</span>
+<span class="t-g">npm run build</span>
+<span class="t-g">npm link</span>
+
+<span class="t-d"># Now use it from anywhere:</span>
+<span class="t-c">ports</span>              <span class="t-d"># interactive dashboard</span>
+<span class="t-c">ports list</span>         <span class="t-d"># static table</span>
+<span class="t-c">ports list --all</span>   <span class="t-d"># include every listener</span>
+<span class="t-c">ports check 3000</span>   <span class="t-d"># check a specific port</span>
+<span class="t-c">ports is-free 3000</span> <span class="t-d"># script-friendly exit code</span>
+<span class="t-c">ports wait 3000 --http 200</span> <span class="t-d"># wait for health</span>
+<span class="t-c">ports kill 3000</span>    <span class="t-d"># preview and stop safely</span>
+
+<span class="t-d"># Build the native macOS companion:</span>
+<span class="t-g">cd macos/PortPilotMenuBar</span>
+<span class="t-g">./scripts/build-app.sh</span>
+</pre>
+          </div>
+        </div>
+        <p style="color: var(--text-dim); margin-top: 16px; font-size: 0.85rem">
+          Requires Node.js 20+ and macOS or Linux. The native companion requires macOS 13+.
+        </p>
+      </section>
+    </div>
+
+    <footer>
+      <div class="container">
+        Port Pilot &mdash; a native SwiftUI companion plus a TypeScript, Ink, and Commander.js CLI
+      </div>
+    </footer>
+  </body>
+</html>

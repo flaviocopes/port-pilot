@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+.DS_Store
+macos/PortPilotMenuBar/.build
+macos/PortPilotMenuBar/.swiftpm
+*.xcuserdata
+*.xcuserdatad
+*.xcuserstate
